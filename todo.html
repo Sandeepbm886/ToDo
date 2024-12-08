@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>to-do</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        html{
+            background-color: black;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        @font-face{
+            src: url(Skating.otf);
+            font-family: myfont;
+        }
+        @font-face{
+            src: url(LEMONMILK-Bold.otf);
+            font-family: myfonttwo;
+        }
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            
+        }
+        .first{
+            display: flex;
+            flex-wrap: wrap;
+            font-family: myfonttwo;
+            gap: 1rem;
+        }
+        label{
+            font-size: 1.5rem;
+            
+        }
+        input{
+            font-size: 1.5rem;
+            flex: 1;
+        }
+
+        .sub-container-second{
+            display: grid;
+            grid-template-columns: 1fr 1rem;
+            gap: 4rem;
+            margin-top: 2rem;
+            font-family: "Inter", sans-serif;
+            font-weight: 100;
+            
+        }
+        .second {
+    width: 20rem;
+    margin-top: .2rem;
+    overflow-y: scroll;
+    padding-right: 2rem; 
+    max-height: 50vh; 
+    scrollbar-width: thin; 
+    scrollbar-color: #555 #222; 
+}
+
+        button{
+            all: unset;
+            border: solid 1px;
+            padding: .2rem .8rem;
+            border-top-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            height: 1.5rem;
+        }
+        .add{
+            margin-left: 1rem;
+        }
+        .del{
+            border: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container first">
+        <label for="input-box">Enter Task Or Something </label>
+        <input id="input-box" type="text">
+        <button class="btn add">Add</button>
+    </div>
+    <div class="container second">
+    </div>
+</body>
+<script>
+    const ipVal=document.getElementById("input-box")
+    const addBtn=document.querySelector(".add")
+    const secDiv=document.querySelector(".second")
+    const getLocal=()=>{
+        return JSON.parse(localStorage.getItem("localtasks"));
+    }
+    const updatedList=(array)=>{
+        return localStorage.setItem("localtasks",JSON.stringify(array))
+    }
+    let arr=getLocal()||[]
+    const dynFun=(element)=>{
+        let SubsecCont=document.createElement("div")
+        SubsecCont.classList.add("sub-container-second")
+        SubsecCont.innerHTML=`<div><li id="tasks">${element}</li></div><button class="btn del"><i class="fa-solid fa-trash-can"></i></button>`
+        secDiv.appendChild(SubsecCont)
+    }
+    const taskhandelr=()=>{
+        let taskVal=ipVal.value.trim();
+        if(taskVal==""){
+            alert("Enter Something YO!!")
+        }
+        if(!arr.includes(taskVal) && taskVal!==""){
+        arr.push(taskVal)
+        arr=[... new Set(arr)]
+        localStorage.setItem("localtasks",JSON.stringify(arr))
+        dynFun(taskVal)
+        }
+        ipVal.value=""
+    }
+    addBtn.addEventListener("click",(e)=>{
+        e.preventDefault();
+        taskhandelr();
+        
+    })
+
+    const showtasks=()=>{
+        arr.forEach(element => {
+            dynFun(element)
+        });
+    }
+    showtasks();
+    secDiv.addEventListener("click",(e)=>{
+        let todoli=e.target
+        console.log(todoli);//debug kinda thing yo!
+        let parentEmt=todoli.parentElement
+        console.log(parentEmt);//debug kinda thing yo!
+        let parentparentEmt=parentEmt.parentElement
+        console.log(parentparentEmt);//debug kinda thing yo!
+        
+        if(todoli.classList.contains("fa-trash-can")){
+        let parentparentEmt=parentEmt.parentElement
+        
+        parentparentEmt.remove()
+        let todocont=parentEmt.previousElementSibling.innerText
+        
+        arr=arr.filter((curelem)=>{
+            return curelem != todocont
+        })
+        updatedList(arr)
+    }
+        })
+    
+    
+
+</script>
+</html>
